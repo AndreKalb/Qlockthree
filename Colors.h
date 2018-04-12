@@ -41,6 +41,7 @@ const color_t defaultColors[] PROGMEM = {
   {128, 0, 255},
   {196, 0, 255},
   {255, 0, 255},
+  {255, 0, 20},
   };
 
 enum eColors : byte{
@@ -63,7 +64,8 @@ enum eColors : byte{
   color_purple2,
   color_purple3,
   color_purple4,
-  color_single_max = color_purple4,
+  color_magenta,
+  color_single_max = color_magenta,
   
   color_rgb_continuous,
   color_rgb_step,
