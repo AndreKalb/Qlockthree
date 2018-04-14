@@ -208,7 +208,7 @@
    Serial-Monitor muss mit der hier angegeben uebereinstimmen.
    Default: ausgeschaltet
 */
-// #define DEBUG
+//#define DEBUG
 #include "Debug.h"
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
 // da auch ohne DEBUG Meldungen ausgegeben werden!
@@ -896,47 +896,42 @@ void loop() {
       case STD_MODE_NORMAL:
         // Event Abfrage
 #ifdef EVENTS
-        for (byte evtID = 0; evtID < EVENT::nbrOfEvts; evtID++) {
-          Serial.print(evtID);Serial.print(": ");
-          const Event * e = pgm_read_word_near(&events[evtID]);
-          if (EVENT::checkDate(e, rtc.getDate(), rtc.getMonth())) {
+        byte evtMode;
             switch (settings.getEvent()) {
               case 0:
-                if (!(rtc.getMinutes() % 5)) {
-                  evtActive = true;
-                  EVENT::show(e);
-                }
+            evtMode = 5;
                 break;
               case 1:
-                if (!(rtc.getMinutes() % 15)) {
-                  evtActive = true;
-                  EVENT::show(e);
-                }
+            evtMode = 15;
                 break;
               case 2:
-                if (!(rtc.getMinutes() % 30)) {
-                  evtActive = true;
-                  EVENT::show(e);
-                }
+            evtMode = 30;
                 break;
               case 3:
-                if (!(rtc.getMinutes() % 45)) {
-                  evtActive = true;
-                  EVENT::show(e);
-                }
+            evtMode = 45;
                 break;
               case 4:
-                if (!(rtc.getMinutes() % 60)) {
-                  evtActive = true;
-                  EVENT::show(e);
-                }
+            evtMode = 60;
                 break;
               default:
+            evtMode = 255;
                 break;
             }
-            evtActive = false;
+        while (!(rtc.getMinutes() % evtMode)) {
+          for (byte evtID = 0; evtID < EVENT::nbrOfEvts; evtID++) {
+            Serial.print(evtID);Serial.print(": "); 
+            const Event * e = pgm_read_word_near(&events[evtID]);
+            if (EVENT::checkDate(e, rtc.getDate(), rtc.getMonth())) {
+              evtActive = true;
+              EVENT::show(e);
+            }
+          }
+          rtc.readTime();
+          if(!evtActive) {
+            break;
           }
         }
+        evtActive = false;
 #endif
       case EXT_MODE_TIMESET:
         renderer.clearScreenBuffer(matrix);
@@ -2284,6 +2279,4 @@ bool isCurrentTimeInNightRange() {
            ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) ||
              (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) ) );
 }
-
-
 
