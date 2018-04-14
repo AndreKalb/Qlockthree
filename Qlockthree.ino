@@ -896,42 +896,39 @@ void loop() {
       case STD_MODE_NORMAL:
         // Event Abfrage
 #ifdef EVENTS
-        for (byte evtID = 0; evtID < nbrOfEvts; evtID++) {
-          if ((rtc.getDate() == events[evtID].getDate()) & (rtc.getMonth() == events[evtID].getMonth())) {
+        for (byte evtID = 0; evtID < EVENT::nbrOfEvts; evtID++) {
+          Serial.print(evtID);Serial.print(": ");
+          const Event * e = pgm_read_word_near(&events[evtID]);
+          if (EVENT::checkDate(e, rtc.getDate(), rtc.getMonth())) {
             switch (settings.getEvent()) {
               case 0:
-                while (!(rtc.getMinutes() % 5)) {
+                if (!(rtc.getMinutes() % 5)) {
                   evtActive = true;
-                  events[evtID].show();
-                  rtc.readTime();
+                  EVENT::show(e);
                 }
                 break;
               case 1:
-                while (!(rtc.getMinutes() % 15)) {
+                if (!(rtc.getMinutes() % 15)) {
                   evtActive = true;
-                  events[evtID].show();
-                  rtc.readTime();
+                  EVENT::show(e);
                 }
                 break;
               case 2:
-                while (!(rtc.getMinutes() % 30)) {
+                if (!(rtc.getMinutes() % 30)) {
                   evtActive = true;
-                  events[evtID].show();
-                  rtc.readTime();
+                  EVENT::show(e);
                 }
                 break;
               case 3:
-                while (!(rtc.getMinutes() % 45)) {
+                if (!(rtc.getMinutes() % 45)) {
                   evtActive = true;
-                  events[evtID].show();
-                  rtc.readTime();
+                  EVENT::show(e);
                 }
                 break;
               case 4:
-                while (!(rtc.getMinutes() % 60)) {
+                if (!(rtc.getMinutes() % 60)) {
                   evtActive = true;
-                  events[evtID].show();
-                  rtc.readTime();
+                  EVENT::show(e);
                 }
                 break;
               default:
@@ -1526,11 +1523,11 @@ void doubleEvtModePressed() {
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_BLANK..."));
   DEBUG_FLUSH();
 
-  if (nbrOfEvts > 0) {
-    events[i].show();
+  if (EVENT::nbrOfEvts > 0) {
+    EVENT::show(pgm_read_word_near(&events[i]));
     i++;
   }
-  if (i >= nbrOfEvts) {
+  if (i >= EVENT::nbrOfEvts) {
     i = 0;
   }
   enableFallBackCounter(settings.getJumpToNormalTimeout());

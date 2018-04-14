@@ -11,57 +11,71 @@
 * V 1.0:  - Erstellt.
 */
 
+#include "Configuration.h"
 #include "Event.h"
 
-// #define DEBUG
+#define DEBUG
 #include "Debug.h"
 
-Event::Event(byte month,
-             byte date,
-             const char* txt,
-             Effects::eEffects effect,
-             eColors color) :
-  _month (month), _date (date),
-  _txt (txt), _effect (effect),
-  _color(color) {};
+#define MAX_STR 32
 
-void Event::show() {
+namespace EVENT {
+
+void show(const Event * const e) {
+  char txt[MAX_STR+1] = {'0'};
+
+  Effects::eEffects effect = pgm_read_byte_near(&e->_effect);
+  eColors color = pgm_read_byte_near(&e->_color);
+
+  strncpy_P(txt, pgm_read_word_near(&e->_txt), MAX_STR);
+
   DEBUG_PRINT(F("Ticker String: "));
-  DEBUG_PRINTLN(_txt);
-  if (strlen(_txt) != 0)
-    Effects::showTickerString(_txt, TICKER_SPEED, settings.getColor());
-  if (_effect < Effects::BITMAP_MIN) {
-    switch (_effect)
+  DEBUG_PRINTLN(txt);
+  
+  if (strlen(txt) != 0)
+    Effects::showTickerString(txt, TICKER_SPEED, settings.getColor());
+  if (effect < Effects::BITMAP_MIN) {
+    switch (effect)
     {
       case Effects::NO_EFFECT:
         break;
       case Effects::EFFECT_FIREWORK:
-        Effects::showFireWork(5, _color);
-        Effects::showFireWork(2, _color);
-        Effects::showFireWork(8, _color);
+        Effects::showFireWork(5, color);
+        Effects::showFireWork(2, color);
+        Effects::showFireWork(8, color);
         break;
       case Effects::EFFECT_HEART:
-        Effects::showHeart(DURATION_ANI_BM, _color);
+        Effects::showHeart(DURATION_ANI_BM, color);
         break;
       case Effects::EFFECT_CANDLE:
-        Effects::showCandle(_color);
+        Effects::showCandle(color);
         break;
       default:
         ;
     }
   }
-  if ((_effect >= Effects::BITMAP_MIN) && (_effect < Effects::ANI_BITMAP_MIN)) {
-    Effects::showBitmap(_effect, DURATION_BM, _color);
+  if ((effect >= Effects::BITMAP_MIN) && (effect < Effects::ANI_BITMAP_MIN)) {
+    Effects::showBitmap(effect, DURATION_BM, color);
   }
-  if (_effect >= Effects::ANI_BITMAP_MIN) {
-    Effects::showAnimatedBitmap(_effect, DURATION_ANI_BM, _color);
+  if (effect >= Effects::ANI_BITMAP_MIN) {
+    Effects::showAnimatedBitmap(effect, DURATION_ANI_BM, color);
   }
 }
 
-byte Event::getMonth() {
-  return _month;
+bool checkDate(const Event * const e, byte actDate, byte actMonth) {
+  byte evtDate = pgm_read_byte_near(&e->_date);
+  byte evtMonth = pgm_read_byte_near(&e->_month);
+
+  DEBUG_PRINT(F("Check:"));
+  DEBUG_PRINT(actDate);
+  DEBUG_PRINT(F("="));
+  DEBUG_PRINT(evtDate);
+  DEBUG_PRINT(F(" "));
+  DEBUG_PRINT(actMonth);
+  DEBUG_PRINT(F("="));
+  DEBUG_PRINTLN(evtMonth);
+  
+  return ((actDate == evtDate) & (actMonth == evtMonth));
 }
 
-byte Event::getDate() {
-  return _date;
 }
