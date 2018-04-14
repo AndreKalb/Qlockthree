@@ -26,25 +26,22 @@ extern Settings settings;
 
 #define DURATION_ANI_BM  (DURATION_BM/5)
 
-
-class Event {
-  public:
-    Event(byte month,
-          byte date,
-          const char* txt,
-          Effects::eEffects effect,
-          eColors color);
-
-    void show();
-    byte getMonth();
-    byte getDate();
-
-  private:
+struct Event
+{
     byte _month;
     byte _date;
     const char* _txt;
     Effects::eEffects _effect;
     eColors _color;
 };
+
+namespace EVENT {
+  
+void show(const Event * const e);
+bool checkDate(const Event * const e, byte actDate, byte actMonth);
+
+extern int nbrOfEvts;
+
+}
 
 #endif //EVENT_H
