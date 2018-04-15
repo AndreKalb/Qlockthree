@@ -42,12 +42,12 @@
 
 // Im Menu auswählbare Sprachen aktivieren.
 #define ENABLE_LANGUAGE_DE
-#define ENABLE_LANGUAGE_CH
-#define ENABLE_LANGUAGE_EN
-#define ENABLE_LANGUAGE_FR
-#define ENABLE_LANGUAGE_IT
-#define ENABLE_LANGUAGE_NL
-#define ENABLE_LANGUAGE_ES
+//#define ENABLE_LANGUAGE_CH
+//#define ENABLE_LANGUAGE_EN
+//#define ENABLE_LANGUAGE_FR
+//#define ENABLE_LANGUAGE_IT
+//#define ENABLE_LANGUAGE_NL
+//#define ENABLE_LANGUAGE_ES
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
@@ -132,7 +132,7 @@
 /*
  * Welcher Temperatursensor soll benutzt werden?
  */
-#define TEMP_SENS_NONE
+//#define TEMP_SENS_NONE
 //#define TEMP_SENS_LM35
 //#define TEMP_SENS_LM335
 
@@ -154,7 +154,7 @@
 #define REMOTE_BLUETOOTH
 
 // Möglichkeit um Events (Geburts-, Jahres-, Feiertage) mit Laufschrift und Effekt zu konfigurieren
-//#define EVENTS
+#define EVENTS
 
 /*
  *
